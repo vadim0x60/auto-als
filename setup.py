@@ -4,7 +4,7 @@ from setuptools import setup
 import sys
 
 dependencies = [
-    'gym-unity==0.*'
+    'gym-unity>=0.27'
 ]
 
 # Being too lazy to build several versions of Virtu-ALS at this point
