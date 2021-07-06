@@ -1,7 +1,7 @@
 import pkg_resources
 
 from mlagents_envs.environment import UnityEnvironment
-from gym_unity.envs import UnityToGymWrapper, UnityGymException
+from gym_unity.envs import UnityToGymWrapper
 
 def AutoALS(attach=False, render=False):
     if attach:
