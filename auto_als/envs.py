@@ -28,7 +28,14 @@ def proivision_unity_env(attach=False, render=False, sleep=0.1):
         proivision_unity_env(attach, render, sleep * 2)
 
 class AutoALS(UnityToGymWrapper):
-    def __init__(self, attach=False, render=False):
+    def __init__(self, attach=False, render='auto', autoplay=True):
+        assert autoplay, 'Support for non-autoplay envs will be added soon'
+
+        if render == 'auto':
+            render = False if autoplay else True
+        
+        assert (not autoplay) or render, 'Hybrid mode requires render to be set to True'
+
         self.attach_ = attach
         self.render_ = render
 
