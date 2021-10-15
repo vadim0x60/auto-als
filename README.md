@@ -53,7 +53,7 @@ So, `action` and `observation` variables are used to establish communication bet
 
 The `observation` is a numpy vector of size 36+7+7=50 that represents various events that happened in the environment prior to the moment when `observation` is received. It implements an event encoding strategy described in [Reinforcement Learning as Message Passing](https://vadim.me/posts/mpdp/).
 
-The first 36 elements indicate whether one of 36 types of events has occured and how long ago it happened. For n=1,2,...,36:
+The first 36 elements indicate whether one of 36 types of events has occured and how long ago it happened. For i=1,2,...,36:
 
 ![Observation formula](https://render.githubusercontent.com/render/math?math=o_i=\exp(t_i-t))
 
@@ -158,6 +158,6 @@ The last 7 components contain the measurements themselves.
     Finish
 ```
 
-Note in particular, the `Assess` actions. These actions, just like `DoNothing` are guaranteed to have no effect on the patient state. However, some observation events will not trigger unless you go looking for them. To check the blood pressure, one needs to attach the blood pressure cuff to the patient and look at the monitor. Hence, the `MeasuredMAP` event will only trigger after you `BPCuffOn` and `AssessMonitor`.
+Note, in particular, the `Assess` actions. These actions, just like `DoNothing` are guaranteed to have no effect on the patient state. However, some observation events will not trigger unless you go looking for them. To check the blood pressure, one needs to attach the blood pressure cuff to the patient and look at the monitor. Hence, the `MeasuredMAP` event will only trigger after you `BPCuffOn` and `AssessMonitor`. [Assessment skills](https://www.resus.org.uk/library/abcde-approach) (knowing where to look and how to establish the patient's state) are crucial for patient resusciation - the simulation would be woefully inadequate if the assessments were just provided for you automatically.
 
 Good luck!
