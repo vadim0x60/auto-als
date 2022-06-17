@@ -34,7 +34,7 @@ class AutoALS(UnityToGymWrapper):
         if render == 'auto':
             render = False if autoplay else True
         
-        assert (not autoplay) or render, 'Hybrid mode requires render to be set to True'
+        assert (autoplay) or render, 'Hybrid mode requires render to be set to True'
 
         self.attach_ = attach
         self.render_ = render
