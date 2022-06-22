@@ -9,12 +9,14 @@ import gym
 import auto_als
 
 @click.command()
-@click.option('--attach/--launch', default=False)
+@click.option('--attach/--launch', default= False)
 def main(attach):
-    env = gym.make('Auto-ALS-v0', attach=attach)
+    #evaluate_policy(model, env)
+    env = gym.make('Auto-ALS-v0', attach=attach, render = True)
 
     print('First episode is a sanity check. Let us do something random')
     env.reset()
+    #env.render("False")
     done = False
     actions = []
     while not done:
