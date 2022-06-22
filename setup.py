@@ -8,7 +8,7 @@ dependencies = [
 ]
 
 # Being too lazy to build several versions of Virtu-ALS at this point
-assert sys.platform == 'linux', 'Only linux is currently supported. It would be pretty easy to support other platforms, contact the developers if you need that'
+#assert sys.platform == 'linux', 'Only linux is currently supported. It would be pretty easy to support other platforms, contact the developers if you need that'
 
 setup(name='auto-als',
       version='1.0',

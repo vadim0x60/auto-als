@@ -37,4 +37,5 @@ MANIFEST
 *.spec
 
 # Heavy build files
-UnityBuilds
+auto_als/UnityBuilds
+als
