@@ -6,6 +6,22 @@ Auto-ALS is a tool for [anthropodidactic reinforcement learning](https://vadim.m
 
 Note that the Auto-ALS only provides an interface to connect a decision-making algorithm to Virtu-ALS, but not the algorithm itself, though see `examples` for a sketch of such algorithm.
 
+For more context see our paper, [Towards Effective Patient Simulators](https://www.frontiersin.org/articles/10.3389/frai.2021.798659/full). If you use Auto-ALS in research, please cite it:
+
+```
+@ARTICLE{10.3389/frai.2021.798659,
+AUTHOR={Liventsev, Vadim and Härmä, Aki and Petković, Milan},   
+TITLE={Towards Effective Patient Simulators},      
+JOURNAL={Frontiers in Artificial Intelligence},      
+VOLUME={4},      
+YEAR={2021},      
+URL={https://www.frontiersin.org/article/10.3389/frai.2021.798659},       
+DOI={10.3389/frai.2021.798659},      
+ISSN={2624-8212},   
+ABSTRACT={In this paper we give an overview of the field of patient simulators and provide qualitative and quantitative comparison of different modeling and simulation approaches. Simulators can be used to train human caregivers but also to develop and optimize algorithms for clinical decision support applications and test and validate interventions. In this paper we introduce three novel patient simulators with different levels of representational accuracy: HeartPole, a simplistic transparent rule-based system, GraphSim, a graph-based model trained on intensive care data, and Auto-ALS—an adjusted version of an educational software package used for training junior healthcare professionals. We provide a qualitative and quantitative comparison of the previously existing as well as proposed simulators.}
+}
+```
+
 ## Programmatic mode
 
 ```
