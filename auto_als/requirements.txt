@@ -1,0 +1,3 @@
+gym-unity>=0.27
+worstpractices @ git+https://github.com/vadim0x60/worstpractices
+tenacity==8.*

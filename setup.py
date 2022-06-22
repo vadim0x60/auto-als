@@ -1,14 +1,9 @@
 # Linux only
 
 from setuptools import setup
-import sys
+from pathlib import Path
 
-dependencies = [
-    'gym-unity>=0.27'
-]
-
-# Being too lazy to build several versions of Virtu-ALS at this point
-#assert sys.platform == 'linux', 'Only linux is currently supported. It would be pretty easy to support other platforms, contact the developers if you need that'
+HERE = Path(__name__).parent
 
 setup(name='auto-als',
       version='1.0',
@@ -16,7 +11,6 @@ setup(name='auto-als',
       author='Vadim Liventsev',
       author_email='v.liventsev@tue.nl',
       url='https://github.com/vadim0x60/auto-als',
-      packages=['auto_als', 'auto_als.UnityBuilds'],
-      install_requires = dependencies,
-      include_package_data=True
+      packages=['auto_als'],
+      install_requires=(HERE / 'auto_als' / 'requirements.txt').read_text().splitlines(),
      )
