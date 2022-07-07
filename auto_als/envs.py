@@ -17,7 +17,7 @@ from tenacity import retry
 from tenacity.wait import wait_exponential
 from tenacity.retry import retry_if_exception_type
 
-BUILDS_PATH = Path(__name__).parent / 'UnityBuilds'
+BUILDS_PATH = Path.cwd() / 'UnityBuilds'
 
 virtu_als_release = '1.0'
 
