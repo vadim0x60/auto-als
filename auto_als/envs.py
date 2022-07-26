@@ -19,7 +19,7 @@ from tenacity.retry import retry_if_exception_type
 
 BUILDS_PATH = Path(__name__).parent / 'UnityBuilds'
 
-virtu_als_release = '1.0'
+virtu_als_release = '1.1'
 
 launcher_suffix = {
     'linux': '.x86_64',
@@ -29,7 +29,24 @@ launcher_suffix = {
 download_msg = """Downloading a copy of Virtu-ALS... 
                   This will take up to 0.5 GB of traffic"""
 
-def download_build(build='full'):
+def required_build(render=False):
+    if sys.platform == 'linux':
+        build = 'StandaloneLinux64'
+    elif sys.platform == 'win32':
+        # https://stackoverflow.com/questions/2208828/detect-64bit-os-windows-in-python
+        if platform.machine().endswith('64'):
+            build = 'StandaloneWindows64'
+        else:
+            build = 'StandaloneWindows32'
+    else:
+        raise UnityGymException(f'Unsupported platform: {sys.platform}')
+
+    if not render:
+        build += '-EnableHeadlessMode'
+
+    return build
+
+def download_build(render=False):
     from urllib.request import urlopen
     from zipfile import ZipFile
     from io import BytesIO
@@ -37,26 +54,26 @@ def download_build(build='full'):
     print(download_msg)
 
     loc = 'https://github.com/vadim0x60/virtu-als-plus/releases/download/'
-    slug = f'{virtu_als_release}/{virtu_als_release}-{build}-{sys.platform}.zip'
+    build = required_build(render)
 
-    with urlopen(loc + slug) as zipresp:
+    with urlopen(loc + virtu_als_release + '/' + build + '.zip') as zipresp:
         with ZipFile(BytesIO(zipresp.read())) as zfile:
             zfile.extractall(BUILDS_PATH)
 
 @remedy(UnityEnvironmentException, download_build)
 @retry(retry=retry_if_exception_type(UnityWorkerInUseException),
        wait=wait_exponential(multiplier=0.1, min=0.1))
-def proivision_unity_env(build='full', attach=False, autoplay=True):
-    launcher = BUILDS_PATH / f'{build.capitalize()}{launcher_suffix[sys.platform]}'
-    launcher = str(launcher)
-
-    additional_args = []
-    if autoplay:
-        additional_args.append('--autoplay')
-
+def proivision_unity_env(render=False, attach=False, autoplay=True):
     if attach:
         unity_env = UnityEnvironment()
     else:
+        build = required_build(render)
+        launcher = str(BUILDS_PATH / build)
+
+        additional_args = []
+        if autoplay:
+            additional_args.append('--autoplay')
+
         unity_env = UnityEnvironment(launcher, additional_args=additional_args)
     return unity_env
 
@@ -70,9 +87,7 @@ class AutoALS(UnityToGymWrapper):
         self.attach_ = attach
         self.render_ = render
 
-        build = 'full' if render else 'headless'
-
-        unity_env = proivision_unity_env(build, attach, autoplay)
+        unity_env = proivision_unity_env(render, attach, autoplay)
         super().__init__(unity_env)
 
     def reset(self):
