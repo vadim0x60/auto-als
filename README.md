@@ -1,4 +1,4 @@
-# Auto-ALS
+![cover](https://user-images.githubusercontent.com/3543310/220397756-4f84d742-6ff7-44dd-86e8-349289fda79b.png)
 
 Auto-ALS is a tool for [anthropodidactic reinforcement learning](https://vadim.me/posts/anthropodidactic/) in Healthcare based on [Virtu-ALS](https://pure.ulster.ac.uk/en/publications/ai-to-enhance-interactive-simulation-based-training-in-resuscitat) - an educational software package designed for training junior healthcare professionals in emergency care. Auto-ALS adds 
 - a programmatic mode to Virtu-ALS allowing you to control the emergency care decisions in the simulator from Python via an [OpenAI Gym](https://gym.openai.com/) interface
