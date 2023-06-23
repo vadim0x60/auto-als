@@ -38,6 +38,8 @@ def required_build(render=False):
             build = 'StandaloneWindows64'
         else:
             build = 'StandaloneWindows32'
+    elif sys.platform == 'darwin':
+        build = 'virtu-als2018.app'
     else:
         raise UnityGymException(f'Unsupported platform: {sys.platform}')
 
