@@ -39,3 +39,7 @@ MANIFEST
 # Heavy build files
 auto_als/UnityBuilds
 als
+
+UnityBuilds/
+
+.DS_Store
