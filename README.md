@@ -71,11 +71,11 @@ The `observation` is a numpy vector of size 36+7+7=50 that represents various ev
 
 The first 36 elements indicate whether one of 36 types of events has occured and how long ago it happened. For i=1,2,...,36:
 
-![Observation formula](https://render.githubusercontent.com/render/math?math=o_i=\exp(t_i-t))
+$$o_i = \exp(t_i - t)$$
 
 i.e. the inverse exponent of how much time has passed since this event has last occured that can be interpreted as _relevance_ of this event at the moment. If the event has never occured,  
 
-![Zero events](https://render.githubusercontent.com/render/math?math=t-t_i=\infty\implies\exp(t_i-t)=0)
+$$t - t_i = \infty \implies \exp(t_i - t) = 0$$
 
 The 36 events are as follows: 
 
@@ -118,7 +118,7 @@ The 36 events are as follows:
     HeartRhythm4
 ```
 
-The next 7 components use the same time encoding ![exp](https://render.githubusercontent.com/render/math?math=o_i=\exp(t_i-t)) for vital signs measurement, i.e. how recently the last measurement has occured:
+The next 7 components use the same time encoding $o_i = \exp(t_i - t)$ for vital signs measurement, i.e. how recently the last measurement has occured:
 
 ```
     MeasuredHeartRate,
