@@ -1,5 +1,4 @@
 gym-unity>=0.27
-worstpractices @ git+https://github.com/vadim0x60/worstpractices
 tenacity==8.*
 protobuf==3.20.*
 numpy==1.23.*

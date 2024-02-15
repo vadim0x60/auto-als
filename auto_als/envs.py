@@ -12,7 +12,6 @@ logger = logging_util.get_logger(__name__)
 
 from gym_unity.envs import UnityToGymWrapper, UnityGymException
 
-from worstpractices import remedy
 from tenacity import retry
 from tenacity.wait import wait_exponential
 from tenacity.retry import retry_if_exception_type
@@ -62,7 +61,8 @@ def download_build(render=False):
         with ZipFile(BytesIO(zipresp.read())) as zfile:
             zfile.extractall(BUILDS_PATH)
 
-@remedy(UnityEnvironmentException, download_build)
+@retry(retry=retry_if_exception_type(UnityEnvironmentException), 
+       before=lambda rs: download_build(render=rs.args[]))
 @retry(retry=retry_if_exception_type(UnityWorkerInUseException),
        wait=wait_exponential(multiplier=0.1, min=0.1))
 def proivision_unity_env(render=False, attach=False, autoplay=True):
