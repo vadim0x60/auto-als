@@ -1,8 +1,10 @@
 from subprocess import call
 import click
+import os
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
+import torch
 
 import wandb
 from wandb.integration.sb3 import WandbCallback
@@ -20,10 +22,19 @@ def no_history_obs(obs):
 @click.command()
 @click.option('--attach/--launch', default= False)
 @click.option('--baseline', is_flag=True)
-def main(attach, baseline):
+@click.option('--device', default='auto')
+def main(attach, baseline, device):
     #evaluate_policy(model, env)
     env = gym.make('Auto-ALS-v0', attach=attach, autoplay=True, render=False)
     env = gym.wrappers.TimeLimit(env, max_episode_steps=256)
+
+    if device == 'auto':
+        if torch.cuda.is_available():
+            device = 'cuda'
+        elif torch.backends.mps.is_available():
+            device = 'mps'
+        else:
+            device = 'cpu'
 
     config = {
         'total_timesteps': TOTAL_TIMESTEPS,
@@ -61,7 +72,7 @@ def main(attach, baseline):
     env.reset()
     print('Sanity check OK, looking for optimal solution')
 
-    alg = PPO('MlpPolicy', env, verbose=1, tensorboard_log=f"runs/{run.id}")
+    alg = PPO('MlpPolicy', env, verbose=1, tensorboard_log=f"runs/{run.id}", device=device)
     model = alg.learn(TOTAL_TIMESTEPS, callback=WandbCallback(model_save_freq=100, gradient_save_freq=100, model_save_path=f"models/{run.id}", verbose=2))
     evaluate_policy(model, env)
 
