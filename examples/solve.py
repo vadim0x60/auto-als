@@ -7,7 +7,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 import wandb
 from wandb.integration.sb3 import WandbCallback
 
-import gym
+import gymnasium as gym
 import auto_als
 
 TOTAL_TIMESTEPS=10000
@@ -22,7 +22,7 @@ def no_history_obs(obs):
 @click.option('--baseline', is_flag=True)
 def main(attach, baseline):
     #evaluate_policy(model, env)
-    env = gym.make('Auto-ALS-v0', attach=attach, render = True)
+    env = gym.make('Auto-ALS-v0', attach=attach, autoplay=True, render=False)
     env = gym.wrappers.TimeLimit(env, max_episode_steps=256)
 
     config = {
@@ -45,16 +45,17 @@ def main(attach, baseline):
     print('First episode is a sanity check. Let us do something random')
     env.reset()
     #env.render("False")
-    done = False
+    terminated = False
+    truncated = False
     actions = []
-    while not done:
+    while not (terminated or truncated):
         if len(actions) == 20:
             action = 34 # end episode
         else:
             action = env.action_space.sample()
         actions.append(action)
         print(action)
-        _, reward, done, _ = env.step(action)
+        _, reward, terminated, truncated, _ = env.step(action)
         print(reward)
 
     env.reset()

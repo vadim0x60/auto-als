@@ -1,6 +1,6 @@
-from gym.envs.registration import register
+from gymnasium.envs.registration import register
 from pathlib import Path
-from gym_unity.envs import UnityGymException
+from auto_als.unity_gym_env import UnityGymException
 
 UnityError = UnityGymException
 

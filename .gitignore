@@ -43,3 +43,8 @@ als
 UnityBuilds/
 
 .DS_Store
+
+# Artefacts left by examples/solve.py
+wandb/
+models/
+runs/

@@ -10,11 +10,12 @@ from mlagents_envs.exception import UnityEnvironmentException, UnityWorkerInUseE
 from mlagents_envs import logging_util
 logger = logging_util.get_logger(__name__)
 
-from gym_unity.envs import UnityToGymWrapper, UnityGymException
+from auto_als.unity_gym_env import UnityToGymWrapper, UnityGymException
 
 from tenacity import retry
 from tenacity.wait import wait_exponential
 from tenacity.retry import retry_if_exception_type
+from tenacity import before_log
 
 BUILDS_PATH = Path(__file__).parent.parent.resolve() / 'UnityBuilds'
 
@@ -62,7 +63,7 @@ def download_build(render=False):
             zfile.extractall(BUILDS_PATH)
 
 @retry(retry=retry_if_exception_type(UnityEnvironmentException), 
-       before=lambda rs: download_build(render=rs.args[]))
+       after=lambda rs: download_build(render=rs.args[0]))
 @retry(retry=retry_if_exception_type(UnityWorkerInUseException),
        wait=wait_exponential(multiplier=0.1, min=0.1))
 def proivision_unity_env(render=False, attach=False, autoplay=True):
@@ -92,7 +93,7 @@ class AutoALS(UnityToGymWrapper):
         unity_env = proivision_unity_env(render, attach, autoplay)
         super().__init__(unity_env)
 
-    def reset(self):
+    def reset(self, seed=None):
         try:
             return super().reset()
         except (UnityEnvironmentException, UnityGymException):
