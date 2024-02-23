@@ -22,39 +22,32 @@ ORIGIN = 'https://github.com/vadim0x60/virtu-als-plus/releases/download/1.1.2/'
 DOWNLOAD_MSG = """Downloading a copy of Virtu-ALS... 
                   This will take up to 0.5 GB of traffic"""
 
-def required_build(render=False):
+def required_build():
     if sys.platform == 'linux':
-        build = 'StandaloneLinux64'
+        return 'StandaloneLinux64'
     elif sys.platform == 'win32':
         # https://stackoverflow.com/questions/2208828/detect-64bit-os-windows-in-python
         if platform.machine().endswith('64'):
-            build = 'StandaloneWindows64'
+            return 'StandaloneWindows64'
         else:
-            build = 'StandaloneWindows32'
+            return 'StandaloneWindows32'
     elif sys.platform == 'darwin':
-        build = 'virtu-als2018.app'
+        return 'virtu-als2018.app'
     else:
         raise UnityGymException(f'Unsupported platform: {sys.platform}')
 
-    src = ORIGIN + build + ('' if render else '-standaloneBuildSubtargetServer') + '.zip'
-    dest = BUILDS_PATH / ('graphic' if render else 'headless')
-    launcher = BUILDS_PATH / ('graphic' if render else 'headless') / build
-
-    return src, dest, launcher
-
-def download_build(render):
+def download_build():
     from urllib.request import urlopen
     from zipfile import ZipFile
     from io import BytesIO
 
-    src, dest, launcher = required_build(render)
-    dest.mkdir(parents=True, exist_ok=True)
+    build = required_build()
 
-    with urlopen(src) as zipresp:
+    with urlopen(ORIGIN + build) as zipresp:
         with ZipFile(BytesIO(zipresp.read())) as zfile:
-            zfile.extractall(dest)
+            zfile.extractall(BUILDS_PATH)
 
-    launcher.chmod(0o755)
+    (BUILDS_PATH / build).chmod(0o755)
 
 @retry(retry=retry_if_exception_type(UnityEnvironmentException), 
        after=lambda rs: download_build(render=rs.args[0]),
@@ -65,14 +58,15 @@ def proivision_unity_env(render=False, attach=False, autoplay=True):
     if attach:
         unity_env = UnityEnvironment()
     else:
-        _, _, launcher = required_build(render)
-        launcher = str(launcher)
+        build = required_build()
+        launcher = str(BUILDS_PATH / build)
 
         additional_args = []
         if autoplay:
             additional_args.append('--autoplay')
 
-        unity_env = UnityEnvironment(launcher, additional_args=additional_args)
+        unity_env = UnityEnvironment(launcher, no_graphics=not render, 
+                                     additional_args=additional_args)
     return unity_env
 
 class AutoALS(UnityToGymWrapper):
