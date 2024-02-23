@@ -22,14 +22,6 @@ ORIGIN = 'https://github.com/vadim0x60/virtu-als-plus/releases/download/1.1.2/'
 DOWNLOAD_MSG = """Downloading a copy of Virtu-ALS... 
                   This will take up to 0.5 GB of traffic"""
 
-launcher_suffix = {
-    'linux': '.x86_64',
-    'win32': 'Win'
-}
-
-
-
-
 def required_build(render=False):
     if sys.platform == 'linux':
         build = 'StandaloneLinux64'
@@ -55,12 +47,14 @@ def download_build(render):
     from zipfile import ZipFile
     from io import BytesIO
 
-    src, dest, _ = required_build(render)
+    src, dest, launcher = required_build(render)
     dest.mkdir(parents=True, exist_ok=True)
 
     with urlopen(src) as zipresp:
         with ZipFile(BytesIO(zipresp.read())) as zfile:
             zfile.extractall(dest)
+
+    launcher.chmod(0o755)
 
 @retry(retry=retry_if_exception_type(UnityEnvironmentException), 
        after=lambda rs: download_build(render=rs.args[0]),
