@@ -2,4 +2,3 @@ stable-baselines3==1.4.*
 click==8.*
 wandb==0.*
 tensorboard==2.*
--e ..
