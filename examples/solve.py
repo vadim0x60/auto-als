@@ -66,8 +66,10 @@ def main(attach, baseline, device):
             action = env.action_space.sample()
         actions.append(action)
         print(action)
-        _, reward, terminated, truncated, _ = env.step(action)
+        _, reward, terminated, truncated, info = env.step(action)
         print(reward)
+
+    print(info['memos'])
 
     env.reset()
     print('Sanity check OK, looking for optimal solution')

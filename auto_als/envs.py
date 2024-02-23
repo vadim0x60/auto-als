@@ -1,11 +1,15 @@
-from distutils.command.build import build
-from enum import auto
-import time
 from pathlib import Path
 import sys
+from typing import List
+import uuid
 
 from mlagents_envs.environment import UnityEnvironment
 from mlagents_envs.exception import UnityEnvironmentException, UnityWorkerInUseException
+from mlagents_envs.side_channel.side_channel import (
+    SideChannel,
+    IncomingMessage,
+    OutgoingMessage,
+)
 
 from mlagents_envs import logging_util
 logger = logging_util.get_logger(__name__)
@@ -21,6 +25,7 @@ BUILDS_PATH = Path(__file__).parent.parent.resolve() / 'UnityBuilds'
 ORIGIN = 'https://github.com/vadim0x60/virtu-als-plus/releases/download/1.1.2/'
 DOWNLOAD_MSG = """Downloading a copy of Virtu-ALS... 
                   This will take up to 0.5 GB of traffic"""
+SIDE_CHANNEL = uuid.UUID('bdb17919-c516-44da-b045-a2191e972dec')
 
 def required_build():
     if sys.platform == 'linux':
@@ -69,7 +74,27 @@ def proivision_unity_env(render=False, attach=False, autoplay=True):
                                      additional_args=additional_args)
     return unity_env
 
-class AutoALS(UnityToGymWrapper):
+class MemoChannel(SideChannel):
+
+    def __init__(self) -> None:
+        super().__init__(SIDE_CHANNEL)
+
+    def on_message_received(self, msg: IncomingMessage) -> None:
+        """
+        Note: We must implement this method of the SideChannel interface to
+        receive messages from Unity
+        """
+        # We simply read a string from the message and print it.
+        print(msg.read_string())
+
+    def send_string(self, data: str) -> None:
+        # Add the string to an OutgoingMessage
+        msg = OutgoingMessage()
+        msg.write_string(data)
+        # We call this method to queue the data we want to send
+        super().queue_message_to_send(msg)
+
+class AutoALS(UnityToGymWrapper, SideChannel):
     def __init__(self, attach=False, render='auto', autoplay=True):
         if render == 'auto':
             render = False if autoplay else True
@@ -78,11 +103,18 @@ class AutoALS(UnityToGymWrapper):
 
         self.attach_ = attach
         self.render_ = render
+        self.memos = ''
 
         unity_env = proivision_unity_env(render, attach, autoplay)
-        super().__init__(unity_env)
+        UnityToGymWrapper.__init__(self, unity_env)
+        SideChannel.__init__(self, SIDE_CHANNEL)
+
+    def on_message_received(self, msg: IncomingMessage) -> None:
+        self.memos += msg.read_string()
 
     def reset(self, seed=None):
+        self.memos = ''
+
         try:
             return super().reset()
         except (UnityEnvironmentException, UnityGymException):
@@ -91,3 +123,8 @@ class AutoALS(UnityToGymWrapper):
             logger.warn(f'Built-in reset functionality failed. Had to {action_taken} the environment')
             super().__init__(proivision_unity_env(self.attach_, self.render_))
             return super().reset()
+        
+    def step(self, action):
+        obs, reward, terminated, truncated, info = super().step(action)
+        info['memos'] = self.memos
+        return obs, reward, terminated, truncated, info
