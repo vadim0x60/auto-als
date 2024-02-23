@@ -19,7 +19,7 @@ from tenacity import before_log
 
 BUILDS_PATH = Path(__file__).parent.parent.resolve() / 'UnityBuilds'
 
-virtu_als_release = '1.1'
+virtu_als_release = '1.1.2'
 
 launcher_suffix = {
     'linux': '.x86_64',
