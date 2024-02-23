@@ -67,7 +67,7 @@ So, `action` and `observation` variables are used to establish communication bet
 
 ## Observation space
 
-The `observation` is a numpy vector of size 36+7+7=50 that represents various events that happened in the environment prior to the moment when `observation` is received. It implements an event encoding strategy described in [Reinforcement Learning as Message Passing](https://vadim.me/posts/mpdp/).
+The `observation` is a numpy vector of size 33+7+7=47 that represents various events that happened in the environment prior to the moment when `observation` is received. It implements an event encoding strategy described in [Reinforcement Learning as Message Passing](https://vadim.me/posts/mpdp/).
 
 The first 36 elements indicate whether one of 36 types of events has occured and how long ago it happened. For i=1,2,...,36:
 
@@ -80,9 +80,6 @@ $$t - t_i = \infty \implies \exp(t_i - t) = 0$$
 The 36 events are as follows: 
 
 ```
-    Blunder,
-    Success,
-    Failure,
     ResponseVerbal,
     ResponseGroan,
     ResponseNone,
