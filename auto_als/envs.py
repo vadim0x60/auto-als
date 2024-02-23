@@ -43,7 +43,7 @@ def download_build():
 
     build = required_build()
 
-    with urlopen(ORIGIN + build) as zipresp:
+    with urlopen(ORIGIN + build + '.zip') as zipresp:
         with ZipFile(BytesIO(zipresp.read())) as zfile:
             zfile.extractall(BUILDS_PATH)
 
