@@ -18,16 +18,17 @@ from tenacity.retry import retry_if_exception_type
 from tenacity import stop_after_attempt
 
 BUILDS_PATH = Path(__file__).parent.parent.resolve() / 'UnityBuilds'
-
-virtu_als_release = '1.1.2'
+ORIGIN = 'https://github.com/vadim0x60/virtu-als-plus/releases/download/1.1.2/'
+DOWNLOAD_MSG = """Downloading a copy of Virtu-ALS... 
+                  This will take up to 0.5 GB of traffic"""
 
 launcher_suffix = {
     'linux': '.x86_64',
     'win32': 'Win'
 }
 
-download_msg = """Downloading a copy of Virtu-ALS... 
-                  This will take up to 0.5 GB of traffic"""
+
+
 
 def required_build(render=False):
     if sys.platform == 'linux':
@@ -43,24 +44,23 @@ def required_build(render=False):
     else:
         raise UnityGymException(f'Unsupported platform: {sys.platform}')
 
-    if not render:
-        build += '-standaloneBuildSubtargetServer'
+    src = ORIGIN + ('-standaloneBuildSubtargetServer' if render else '') + '.zip'
+    dest = BUILDS_PATH / ('graphic' if render else 'headless')
+    launcher = BUILDS_PATH / ('graphic' if render else 'headless') / build
 
-    return build
+    return src, dest, launcher
 
-def download_build(render=False):
+def download_build(render):
     from urllib.request import urlopen
     from zipfile import ZipFile
     from io import BytesIO
 
-    print(download_msg)
+    src, dest, _ = required_build(render)
+    dest.mkdir(parents=True, exist_ok=True)
 
-    loc = 'https://github.com/vadim0x60/virtu-als-plus/releases/download/'
-    build = required_build(render)
-
-    with urlopen(loc + virtu_als_release + '/' + build + '.zip') as zipresp:
+    with urlopen(src) as zipresp:
         with ZipFile(BytesIO(zipresp.read())) as zfile:
-            zfile.extractall(BUILDS_PATH)
+            zfile.extractall(dest)
 
 @retry(retry=retry_if_exception_type(UnityEnvironmentException), 
        after=lambda rs: download_build(render=rs.args[0]),
@@ -71,8 +71,8 @@ def proivision_unity_env(render=False, attach=False, autoplay=True):
     if attach:
         unity_env = UnityEnvironment()
     else:
-        build = required_build(render)
-        launcher = str(BUILDS_PATH / build)
+        _, _, launcher = required_build(render)
+        launcher = str(launcher)
 
         additional_args = []
         if autoplay:
