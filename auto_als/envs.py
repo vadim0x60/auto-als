@@ -50,7 +50,7 @@ def download_build():
     (BUILDS_PATH / build).chmod(0o755)
 
 @retry(retry=retry_if_exception_type(UnityEnvironmentException), 
-       after=lambda rs: download_build(render=rs.args[0]),
+       after=lambda rs: download_build(),
        stop=stop_after_attempt(1))
 @retry(retry=retry_if_exception_type(UnityWorkerInUseException),
        wait=wait_exponential(multiplier=0.1, min=0.1))
