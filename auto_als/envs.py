@@ -44,7 +44,7 @@ def required_build(render=False):
     else:
         raise UnityGymException(f'Unsupported platform: {sys.platform}')
 
-    src = ORIGIN + ('-standaloneBuildSubtargetServer' if render else '') + '.zip'
+    src = ORIGIN + build + ('' if render else '-standaloneBuildSubtargetServer') + '.zip'
     dest = BUILDS_PATH / ('graphic' if render else 'headless')
     launcher = BUILDS_PATH / ('graphic' if render else 'headless') / build
 
