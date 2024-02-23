@@ -15,7 +15,7 @@ from auto_als.unity_gym_env import UnityToGymWrapper, UnityGymException
 from tenacity import retry
 from tenacity.wait import wait_exponential
 from tenacity.retry import retry_if_exception_type
-from tenacity import before_log
+from tenacity import stop_after_attempt
 
 BUILDS_PATH = Path(__file__).parent.parent.resolve() / 'UnityBuilds'
 
@@ -63,7 +63,8 @@ def download_build(render=False):
             zfile.extractall(BUILDS_PATH)
 
 @retry(retry=retry_if_exception_type(UnityEnvironmentException), 
-       after=lambda rs: download_build(render=rs.args[0]))
+       after=lambda rs: download_build(render=rs.args[0]),
+       stop=stop_after_attempt(1))
 @retry(retry=retry_if_exception_type(UnityWorkerInUseException),
        wait=wait_exponential(multiplier=0.1, min=0.1))
 def proivision_unity_env(render=False, attach=False, autoplay=True):
