@@ -44,7 +44,7 @@ def required_build(render=False):
         raise UnityGymException(f'Unsupported platform: {sys.platform}')
 
     if not render:
-        build += '-EnableHeadlessMode'
+        build += '-standaloneBuildSubtargetServer'
 
     return build
 
