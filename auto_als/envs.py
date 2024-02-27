@@ -56,7 +56,7 @@ def download_build():
 
 @retry(retry=retry_if_exception_type(UnityEnvironmentException), 
        after=lambda rs: download_build(),
-       stop=stop_after_attempt(1))
+       stop=stop_after_attempt(2))
 @retry(retry=retry_if_exception_type(UnityWorkerInUseException),
        wait=wait_exponential(multiplier=0.1, min=0.1))
 def proivision_unity_env(render=False, attach=False, autoplay=True):
