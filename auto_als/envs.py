@@ -59,7 +59,8 @@ def download_build():
        stop=stop_after_attempt(2))
 @retry(retry=retry_if_exception_type(UnityWorkerInUseException),
        wait=wait_exponential(multiplier=0.1, min=0.1))
-def proivision_unity_env(render=False, attach=False, autoplay=True):
+def proivision_unity_env(render=False, attach=False, autoplay=True,
+                         side_channels=[], log_folder=None):
     if attach:
         unity_env = UnityEnvironment()
     else:
@@ -71,31 +72,14 @@ def proivision_unity_env(render=False, attach=False, autoplay=True):
             additional_args.append('--autoplay')
 
         unity_env = UnityEnvironment(launcher, no_graphics=not render, 
-                                     additional_args=additional_args)
+                                     additional_args=additional_args,
+                                     log_folder=log_folder,
+                                     side_channels=side_channels)
     return unity_env
 
-class MemoChannel(SideChannel):
-
-    def __init__(self) -> None:
-        super().__init__(SIDE_CHANNEL)
-
-    def on_message_received(self, msg: IncomingMessage) -> None:
-        """
-        Note: We must implement this method of the SideChannel interface to
-        receive messages from Unity
-        """
-        # We simply read a string from the message and print it.
-        print(msg.read_string())
-
-    def send_string(self, data: str) -> None:
-        # Add the string to an OutgoingMessage
-        msg = OutgoingMessage()
-        msg.write_string(data)
-        # We call this method to queue the data we want to send
-        super().queue_message_to_send(msg)
-
 class AutoALS(UnityToGymWrapper, SideChannel):
-    def __init__(self, attach=False, render='auto', autoplay=True):
+    def __init__(self, attach=False, render='auto', autoplay=True, 
+                 log_folder='.'):
         if render == 'auto':
             render = False if autoplay else True
         
@@ -105,7 +89,8 @@ class AutoALS(UnityToGymWrapper, SideChannel):
         self.render_ = render
         self.memos = ''
 
-        unity_env = proivision_unity_env(render, attach, autoplay)
+        unity_env = proivision_unity_env(render, attach, autoplay, [self], 
+                                         log_folder=log_folder)
         UnityToGymWrapper.__init__(self, unity_env)
         SideChannel.__init__(self, SIDE_CHANNEL)
 
