@@ -88,11 +88,13 @@ class AutoALS(UnityToGymWrapper, SideChannel):
         self.attach_ = attach
         self.render_ = render
         self.memos = ''
+        
+        SideChannel.__init__(self, SIDE_CHANNEL)
 
         unity_env = proivision_unity_env(render, attach, autoplay, [self], 
                                          log_folder=log_folder)
         UnityToGymWrapper.__init__(self, unity_env)
-        SideChannel.__init__(self, SIDE_CHANNEL)
+        
 
     def on_message_received(self, msg: IncomingMessage) -> None:
         self.memos += msg.read_string()
