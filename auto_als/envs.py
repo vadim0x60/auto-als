@@ -78,10 +78,10 @@ def proivision_unity_env(render=False, attach=False, autoplay=True,
     return unity_env
 
 class AutoALS(UnityToGymWrapper, SideChannel):
-    def __init__(self, attach=False, render='auto', autoplay=True, 
+    def __init__(self, attach=False, render=False, autoplay='auto', 
                  log_folder='.'):
-        if render == 'auto':
-            render = False if autoplay else True
+        if autoplay == 'auto':
+            autoplay = False if render else True
         
         assert autoplay or render, 'Hybrid mode requires render to be set to True'
 
