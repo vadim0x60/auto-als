@@ -114,4 +114,5 @@ class AutoALS(UnityToGymWrapper, SideChannel):
     def step(self, action):
         obs, reward, terminated, truncated, info = super().step(action)
         info['memos'] = self.memos
+        self.memos = ''
         return obs, reward, terminated, truncated, info
