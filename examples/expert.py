@@ -7,7 +7,7 @@ import click
 def master(render):
     actions = {a: i for i, a in enumerate(auto_als.actions)}
 
-    env = gym.make('Auto-ALS-v0', attach=False, render=True, autoplay=True)
+    env = gym.make('Auto-ALS-v0', attach=False, render=render, autoplay=True)
     env.reset()
     print(env.step(actions['AssessAirway']))
     print(env.step(actions['AssessBreathing']))
