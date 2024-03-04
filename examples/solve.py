@@ -21,11 +21,12 @@ def no_history_obs(obs):
 
 @click.command()
 @click.option('--attach/--launch', default= False)
+@click.option('--render', is_flag=True)
 @click.option('--baseline', is_flag=True)
 @click.option('--device', default='auto')
-def main(attach, baseline, device):
+def master(attach, baseline, device, render):
     #evaluate_policy(model, env)
-    env = gym.make('Auto-ALS-v0', attach=attach, autoplay=True, render=False)
+    env = gym.make('Auto-ALS-v0', attach=attach, autoplay=True, render=render)
     env = gym.wrappers.TimeLimit(env, max_episode_steps=256)
 
     if device == 'auto':
@@ -81,4 +82,4 @@ def main(attach, baseline, device):
     run.finish()
 
 if __name__ == '__main__':
-    main()
+    master()
