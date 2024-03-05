@@ -79,6 +79,8 @@ def master(attach, baseline, device, render):
     model = alg.learn(TOTAL_TIMESTEPS, callback=WandbCallback(model_save_freq=100, gradient_save_freq=100, model_save_path=f"models/{run.id}", verbose=2))
     evaluate_policy(model, env)
 
+    env.close()
+
     run.finish()
 
 if __name__ == '__main__':

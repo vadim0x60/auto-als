@@ -18,5 +18,7 @@ def master(render):
         if not render:
             print(env.step(actions['Finish']))
 
+    env.close()
+
 if __name__ == '__main__':
     master()
