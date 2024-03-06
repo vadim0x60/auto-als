@@ -22,7 +22,7 @@ from tenacity.retry import retry_if_exception_type
 from tenacity import stop_after_attempt
 
 BUILDS_PATH = Path(__file__).parent.parent.resolve() / 'UnityBuilds'
-ORIGIN = 'https://github.com/vadim0x60/virtu-als-plus/releases/download/1.3/'
+ORIGIN = 'https://github.com/vadim0x60/virtu-als-plus/releases/download/1.4/'
 DOWNLOAD_MSG = """Downloading a copy of Virtu-ALS... 
                   This will take up to 0.5 GB of traffic"""
 SIDE_CHANNEL = uuid.UUID('bdb17919-c516-44da-b045-a2191e972dec')
