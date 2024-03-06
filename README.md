@@ -181,7 +181,7 @@ from auto_als import observations
 
 Note, in particular, the `Assess` actions. These actions, just like `DoNothing` are guaranteed to have no effect on the patient state. However, some observation events will not trigger unless you go looking for them. To check the blood pressure, one needs to attach the blood pressure cuff to the patient and look at the monitor. Hence, the `MeasuredMAP` event will only trigger after you `BPCuffOn` and `AssessMonitor`. [Assessment skills](https://www.resus.org.uk/library/abcde-approach) (knowing where to look and how to establish the patient's state) are crucial for patient resusciation - the simulation would be woefully inadequate if the assessments were just provided for you automatically.
 
-A dictionary that maps action labels to action indices can be accessed with
+The above list of actions can be accessed with
 
 ```
 from auto_als import actions
