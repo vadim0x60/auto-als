@@ -71,7 +71,6 @@ def master(attach, baseline, device, render):
         print(info['memos'])
         print(reward)
 
-    env.reset()
     print('Sanity check OK, looking for optimal solution')
 
     alg = PPO('MlpPolicy', env, verbose=1, tensorboard_log=f"runs/{run.id}", device=device)
