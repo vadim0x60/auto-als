@@ -37,6 +37,8 @@ actions = [
     'DefibChangePaceRateDown',
     'DefibChangePaceRateUp',
     'DefibPace',
+    'DefibPacePause',
+    'DefibSync',
     'AssessResponse',
     'AssessAirway',
     'AssessBreathing',

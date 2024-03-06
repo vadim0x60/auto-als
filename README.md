@@ -166,6 +166,8 @@ from auto_als import observations
     DefibChangePaceRateDown,
     DefibChangePaceRateUp,
     DefibPace,
+    DefibPacePause,
+    DefibSync,
     AssessResponse
     AssessAirway
     AssessBreathing,
