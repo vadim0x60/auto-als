@@ -12,7 +12,7 @@ from wandb.integration.sb3 import WandbCallback
 import gymnasium as gym
 import auto_als
 
-TOTAL_TIMESTEPS=10000
+TOTAL_TIMESTEPS=int(os.environ.get('TOTAL_TIMESTEPS', 1000))
 
 def no_history_obs(obs):
     obs = obs.copy()
