@@ -11,7 +11,11 @@ def master(render):
     print(env.reset())
     for idx, name in enumerate(auto_als.actions):
         print(name)
-        print(env.step(idx))
+        ret = env.step(idx)
+        print(ret)
+
+        if (ret[2] or ret[3]):
+            break
 
     env.close()
 
