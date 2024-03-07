@@ -62,7 +62,7 @@ def master(attach, baseline, device, render):
     actions = []
     while not (terminated or truncated):
         if len(actions) == 20:
-            action = 34 # end episode
+            action = 36 # end episode
         else:
             action = env.action_space.sample()
         actions.append(action)
