@@ -15,7 +15,7 @@ def master(render):
         print(ret)
 
         if (ret[2] or ret[3]):
-            break
+            print(env.reset())
 
     env.close()
 
