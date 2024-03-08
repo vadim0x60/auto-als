@@ -1,11 +1,11 @@
 import click
-from stable_baselines3.common.base_class import BaseAlgorithm 
+from stable_baselines3 import PPO
 import gymnasium as gym
 
 @click.command()
 @click.argument('path')
 def run_model(path):
-    model = BaseAlgorithm.load(path)
+    model = PPO.load(path)
     env = gym.make('Auto-ALS-v0', attach=False, render=False, autoplay=True)
 
     obs, info = env.reset()
