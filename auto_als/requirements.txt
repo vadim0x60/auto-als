@@ -2,3 +2,4 @@ mlagents-envs==0.*
 tenacity==8.*
 protobuf==3.*
 numpy<1.24.0
+gymnasium~=0.29
