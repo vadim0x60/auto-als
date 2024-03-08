@@ -1,6 +1,7 @@
 import click
 from stable_baselines3 import PPO
 import gymnasium as gym
+import auto_als
 
 @click.command()
 @click.argument('path')
