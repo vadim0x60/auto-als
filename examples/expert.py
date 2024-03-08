@@ -4,7 +4,7 @@ import click
 
 @click.command()
 @click.option('--render', is_flag=True)
-def master(render):
+def expert(render):
     actions = {a: i for i, a in enumerate(auto_als.actions)}
 
     try:
@@ -22,4 +22,4 @@ def master(render):
         env.close()
 
 if __name__ == '__main__':
-    master()
+    expert()

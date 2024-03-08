@@ -4,7 +4,7 @@ import click
 
 @click.command('Try all available actions')
 @click.option('--render', is_flag=True)
-def master(render):
+def actions(render):
     actions = {a: i for i, a in enumerate(auto_als.actions)}
 
     env = gym.make('Auto-ALS-v0', attach=False, render=render, autoplay=True)
@@ -20,4 +20,4 @@ def master(render):
     env.close()
 
 if __name__ == '__main__':
-    master()
+    actions()

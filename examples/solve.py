@@ -24,7 +24,7 @@ def no_history_obs(obs):
 @click.option('--render', is_flag=True)
 @click.option('--baseline', is_flag=True)
 @click.option('--device', default='auto')
-def master(attach, baseline, device, render):
+def solve(attach, baseline, device, render):
     #evaluate_policy(model, env)
     try:
         env = gym.make('Auto-ALS-v0', attach=attach, autoplay=True, render=render)
@@ -88,4 +88,4 @@ def master(attach, baseline, device, render):
     run.finish()
 
 if __name__ == '__main__':
-    master()
+    solve()
