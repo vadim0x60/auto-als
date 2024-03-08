@@ -13,7 +13,7 @@ def run_model(path):
     terminated = False
     truncated = False
     while not (terminated or truncated):
-        action = model.predict(obs, deterministic=True)
+        action, _ = model.predict(obs, deterministic=True)
         _, reward, terminated, truncated, info = env.step(action)
         print(info['memos'])
         print(reward)
