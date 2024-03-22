@@ -51,9 +51,6 @@ actions = [
     ]
 
 observations = [
-    'Blunder',
-    'Success',
-    'Failure',
     'ResponseVerbal',
     'ResponseGroan',
     'ResponseNone',
