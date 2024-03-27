@@ -69,7 +69,7 @@ So, `action` and `observation` variables are used to establish communication bet
 
 The `observation` is a numpy vector of size 33+7+7=47 that represents various events that happened in the environment prior to the moment when `observation` is received. It implements an event encoding strategy described in [Reinforcement Learning as Message Passing](https://vadim.me/posts/mpdp/).
 
-The first 36 elements indicate whether one of 36 types of events has occured and how long ago it happened. For i=1,2,...,36:
+The first 33 elements indicate whether one of 33 types of events has occured and how long ago it happened. For i=1,2,...,33:
 
 $$o_i = \exp(t_i - t)$$
 
@@ -77,7 +77,7 @@ i.e. the inverse exponent of how much time has passed since this event has last 
 
 $$t - t_i = \infty \implies \exp(t_i - t) = 0$$
 
-The 36 events are as follows: 
+The 33 events are as follows: 
 
 ```
     ResponseVerbal,

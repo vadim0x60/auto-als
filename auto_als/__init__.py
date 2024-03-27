@@ -94,6 +94,7 @@ observations = [
     'HeartRate',
     'RespRate',
     'CapillaryGlucose',
+    'Temperature',
     'MAP',
     'Sats',
     'Resps'
