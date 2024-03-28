@@ -6,7 +6,7 @@ from pathlib import Path
 HERE = Path(__name__).parent
 
 setup(name='auto-als',
-      version='1.5',
+      version='1.6',
       description='OpenAI Gym Reinforcement Learning environment simulating hospital emergency ward',
       author='Vadim Liventsev',
       author_email='v.liventsev@tue.nl',

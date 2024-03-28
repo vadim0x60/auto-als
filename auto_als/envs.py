@@ -21,6 +21,9 @@ from tenacity.wait import wait_exponential
 from tenacity.retry import retry_if_exception_type
 from tenacity import stop_after_attempt
 
+class AutoALSException(Exception):
+    pass
+
 BUILDS_PATH = Path(__file__).parent.parent.resolve() / 'UnityBuilds'
 ORIGIN = 'https://github.com/vadim0x60/virtu-als-plus/releases/download/1.4/'
 DOWNLOAD_MSG = """Downloading a copy of Virtu-ALS... 
@@ -39,7 +42,7 @@ def required_build():
     elif sys.platform == 'darwin':
         return 'virtu-als2018.app'
     else:
-        raise UnityGymException(f'Unsupported platform: {sys.platform}')
+        raise AutoALSException(f'Unsupported platform: {sys.platform}')
 
 def download_build():
     from urllib.request import urlopen
@@ -88,12 +91,15 @@ class AutoALS(UnityToGymWrapper, SideChannel):
         self.attach_ = attach
         self.render_ = render
         self.memos = ''
-        
-        SideChannel.__init__(self, SIDE_CHANNEL)
+            
+        try:
+            SideChannel.__init__(self, SIDE_CHANNEL)
 
-        unity_env = proivision_unity_env(render, attach, autoplay, [self], 
-                                         log_folder=log_folder)
-        UnityToGymWrapper.__init__(self, unity_env)
+            unity_env = proivision_unity_env(render, attach, autoplay, [self], 
+                                            log_folder=log_folder)
+            UnityToGymWrapper.__init__(self, unity_env)
+        except (UnityEnvironmentException, UnityGymException) as e:
+            raise AutoALSException('Unity environment is not starting as expected') from e
         
 
     def on_message_received(self, msg: IncomingMessage) -> None:
@@ -112,7 +118,10 @@ class AutoALS(UnityToGymWrapper, SideChannel):
             return super().reset()
         
     def step(self, action):
-        obs, reward, terminated, truncated, info = super().step(action)
-        info['memos'] = self.memos
-        self.memos = ''
-        return obs, reward, terminated, truncated, info
+        try:
+            obs, reward, terminated, truncated, info = super().step(action)
+            info['memos'] = self.memos
+            self.memos = ''
+            return obs, reward, terminated, truncated, info
+        except (UnityEnvironmentException, UnityGymException) as e:
+            raise AutoALSException('Unity environment is not responding as expected') from e

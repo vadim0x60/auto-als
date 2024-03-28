@@ -1,8 +1,6 @@
 from gymnasium.envs.registration import register
-from pathlib import Path
-from auto_als.unity_gym_env import UnityGymException
 
-UnityError = UnityGymException
+from auto_als.envs import AutoALSException
 
 register(
     id='Auto-ALS-v0',
