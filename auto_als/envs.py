@@ -4,7 +4,7 @@ from typing import List
 import uuid
 
 from mlagents_envs.environment import UnityEnvironment
-from mlagents_envs.exception import UnityEnvironmentException, UnityWorkerInUseException
+from mlagents_envs.exception import UnityEnvironmentException, UnityWorkerInUseException, UnityException
 from mlagents_envs.side_channel.side_channel import (
     SideChannel,
     IncomingMessage,
@@ -98,7 +98,7 @@ class AutoALS(UnityToGymWrapper, SideChannel):
             unity_env = proivision_unity_env(render, attach, autoplay, [self], 
                                             log_folder=log_folder)
             UnityToGymWrapper.__init__(self, unity_env)
-        except (UnityEnvironmentException, UnityGymException) as e:
+        except (UnityException, UnityGymException) as e:
             raise AutoALSException('Unity environment is not starting as expected') from e
         
 
@@ -110,7 +110,7 @@ class AutoALS(UnityToGymWrapper, SideChannel):
 
         try:
             return super().reset()
-        except (UnityEnvironmentException, UnityGymException):
+        except (UnityException, UnityGymException):
             self._env.close()
             action_taken = 'reattach to' if self.attach_ else 'restart'
             logger.warn(f'Built-in reset functionality failed. Had to {action_taken} the environment')
@@ -123,5 +123,5 @@ class AutoALS(UnityToGymWrapper, SideChannel):
             info['memos'] = self.memos
             self.memos = ''
             return obs, reward, terminated, truncated, info
-        except (UnityEnvironmentException, UnityGymException) as e:
+        except (UnityException, UnityGymException) as e:
             raise AutoALSException('Unity environment is not responding as expected') from e
