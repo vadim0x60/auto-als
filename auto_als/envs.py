@@ -121,7 +121,8 @@ class AutoALS(UnityToGymWrapper, SideChannel):
         if not hard:
             try:
                 return super().reset()
-            except (UnityException, UnityGymException):
+            except (UnityException, UnityGymException) as e:
+                logger.exception(e)
                 logger.warn(f'Soft reset failed, doing hard reset')
 
         self._env.close()
