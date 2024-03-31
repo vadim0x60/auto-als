@@ -88,19 +88,23 @@ class AutoALS(UnityToGymWrapper, SideChannel):
         
         assert autoplay or render, 'Hybrid mode requires render to be set to True'
 
+        self.autoplay_ = autoplay
         self.attach_ = attach
         self.render_ = render
+        self.log_folder = log_folder
         self.memos = ''
-            
+
+        self.initialize()
+        
+    def initialize(self):
         try:
             SideChannel.__init__(self, SIDE_CHANNEL)
 
-            unity_env = proivision_unity_env(render, attach, autoplay, [self], 
-                                            log_folder=log_folder)
+            unity_env = proivision_unity_env(self.render_, self.attach_, self.autoplay_, [self], 
+                                             log_folder=self.log_folder)
             UnityToGymWrapper.__init__(self, unity_env)
         except (UnityException, UnityGymException) as e:
             raise AutoALSException('Unity environment is not starting as expected') from e
-        
 
     def on_message_received(self, msg: IncomingMessage) -> None:
         self.memos += msg.read_string()
@@ -121,7 +125,7 @@ class AutoALS(UnityToGymWrapper, SideChannel):
                 logger.warn(f'Soft reset failed, doing hard reset')
 
         self._env.close()
-        super().__init__(proivision_unity_env(self.attach_, self.render_))
+        self.initialize()
         return super().reset()
         
     def step(self, action):
