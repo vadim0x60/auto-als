@@ -105,17 +105,24 @@ class AutoALS(UnityToGymWrapper, SideChannel):
     def on_message_received(self, msg: IncomingMessage) -> None:
         self.memos += msg.read_string()
 
-    def reset(self, seed=None):
+    def reset(self, seed=None, hard=False):
+        """
+        Reset the game to the beginning.
+        Hard reset will kill the process and restart (or reattach to) the binary ,
+        soft reset will just reset the game scene.
+        """
+
         self.memos = ''
 
-        try:
-            return super().reset()
-        except (UnityException, UnityGymException):
-            self._env.close()
-            action_taken = 'reattach to' if self.attach_ else 'restart'
-            logger.warn(f'Built-in reset functionality failed. Had to {action_taken} the environment')
-            super().__init__(proivision_unity_env(self.attach_, self.render_))
-            return super().reset()
+        if not hard:
+            try:
+                return super().reset()
+            except (UnityException, UnityGymException):
+                logger.warn(f'Soft reset failed, doing hard reset')
+
+        self._env.close()
+        super().__init__(proivision_unity_env(self.attach_, self.render_))
+        return super().reset()
         
     def step(self, action):
         try:
