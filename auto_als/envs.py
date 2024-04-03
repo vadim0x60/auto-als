@@ -109,22 +109,7 @@ class AutoALS(UnityToGymWrapper, SideChannel):
     def on_message_received(self, msg: IncomingMessage) -> None:
         self.memos += msg.read_string()
 
-    def reset(self, seed=None, hard=False):
-        """
-        Reset the game to the beginning.
-        Hard reset will kill the process and restart (or reattach to) the binary ,
-        soft reset will just reset the game scene.
-        """
-
-        self.memos = ''
-
-        if not hard:
-            try:
-                return super().reset()
-            except (UnityException, UnityGymException) as e:
-                logger.exception(e)
-                logger.warn(f'Soft reset failed, doing hard reset')
-
+    def reset(self, seed=None):
         self._env.close()
         self.initialize()
         return super().reset()
