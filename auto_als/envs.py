@@ -101,7 +101,7 @@ class AutoALS(gym.Env, SideChannel):
 
         self.action_space = gym.spaces.Discrete(len(actions))
         self.observation_space = gym.spaces.Box(low=0, high=1, 
-                                                shape=len(observations), 
+                                                shape=(len(observations),),
                                                 dtype=float)
 
     def on_message_received(self, msg: IncomingMessage) -> None:
