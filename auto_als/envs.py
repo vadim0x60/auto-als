@@ -112,6 +112,8 @@ class AutoALS(gym.Env, SideChannel):
             self.unity_env = proivision_unity_env(self.render_, self.attach_, self.autoplay_, [self], 
                                                   log_folder=self.log_folder)
             self.rl_env = UnityToGymWrapper(self.unity_env)
+            self.action_space = self.rl_env.action_space
+            self.observation_space = self.rl_env.observation_space
         except (UnityException, UnityGymException) as e:
             raise AutoALSException('Unity environment is not starting as expected') from e
         
