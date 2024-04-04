@@ -2,6 +2,7 @@ from pathlib import Path
 import sys
 from typing import List
 import uuid
+import gymnasium as gym
 
 from mlagents_envs.environment import UnityEnvironment
 from mlagents_envs.exception import UnityEnvironmentException, UnityWorkerInUseException, UnityException
@@ -80,9 +81,12 @@ def proivision_unity_env(render=False, attach=False, autoplay=True,
                                      side_channels=side_channels)
     return unity_env
 
-class AutoALS(UnityToGymWrapper, SideChannel):
+class AutoALS(gym.Env, SideChannel):
     def __init__(self, attach=False, render=False, autoplay='auto', 
                  log_folder='.'):
+        gym.Env.__init__(self)
+        SideChannel.__init__(self, SIDE_CHANNEL)
+
         if autoplay == 'auto':
             autoplay = False if render else True
         
@@ -94,29 +98,28 @@ class AutoALS(UnityToGymWrapper, SideChannel):
         self.log_folder = log_folder
         self.memos = ''
 
-        self.initialize()
-        
-    def initialize(self):
-        try:
-            SideChannel.__init__(self, SIDE_CHANNEL)
-
-            unity_env = proivision_unity_env(self.render_, self.attach_, self.autoplay_, [self], 
-                                             log_folder=self.log_folder)
-            UnityToGymWrapper.__init__(self, unity_env)
-        except (UnityException, UnityGymException) as e:
-            raise AutoALSException('Unity environment is not starting as expected') from e
-
     def on_message_received(self, msg: IncomingMessage) -> None:
         self.memos += msg.read_string()
 
     def reset(self, seed=None):
-        self._env.close()
-        self.initialize()
-        return super().reset()
+        try:
+            self.rl_env.close()
+            self.unity_env.close()
+        except AttributeError:
+            pass
+
+        try:
+            self.unity_env = proivision_unity_env(self.render_, self.attach_, self.autoplay_, [self], 
+                                                  log_folder=self.log_folder)
+            self.rl_env = UnityToGymWrapper(self.unity_env)
+        except (UnityException, UnityGymException) as e:
+            raise AutoALSException('Unity environment is not starting as expected') from e
+        
+        return self.rl_env.reset()
         
     def step(self, action):
         try:
-            obs, reward, terminated, truncated, info = super().step(action)
+            obs, reward, terminated, truncated, info = self.rl_env.step(action)
             info['memos'] = self.memos
             self.memos = ''
             return obs, reward, terminated, truncated, info
