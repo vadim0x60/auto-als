@@ -122,8 +122,11 @@ class AutoALS(gym.Env, SideChannel):
                                                   log_folder=self.log_folder)
             self.rl_env = UnityToGymWrapper(self.unity_env)
 
-            assert self.rl_env.observation_space.shape == self.observation_space.shape, 'Observation space mismatch'
-            assert self.rl_env.action_space.n == self.action_space.n, 'Action space mismatch'
+            obs_str = f'UnityToGymWrapper has observation space {self.rl_env.observation_space.shape}, {self.observation_space.shape} expected'
+            act_str = f'UnityToGymWrapper has action space {self.rl_env.action_space.n}, {self.action_space.n} expected'
+
+            assert self.rl_env.observation_space.shape == self.observation_space.shape, obs_str
+            assert self.rl_env.action_space.n == self.action_space.n, act_str
         except (UnityException, UnityGymException) as e:
             raise AutoALSException('Unity environment is not starting as expected') from e
         
