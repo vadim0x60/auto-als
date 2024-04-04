@@ -101,12 +101,15 @@ class AutoALS(gym.Env, SideChannel):
     def on_message_received(self, msg: IncomingMessage) -> None:
         self.memos += msg.read_string()
 
-    def reset(self, seed=None):
+    def close(self):
         try:
             self.rl_env.close()
             self.unity_env.close()
         except AttributeError:
             pass
+
+    def reset(self, seed=None):
+        self.close()
 
         try:
             self.unity_env = proivision_unity_env(self.render_, self.attach_, self.autoplay_, [self], 
