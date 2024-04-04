@@ -16,6 +16,7 @@ from mlagents_envs import logging_util
 logger = logging_util.get_logger(__name__)
 
 from auto_als.unity_gym_env import UnityToGymWrapper, UnityGymException
+from auto_als.api import actions, observations
 
 from tenacity import retry
 from tenacity.wait import wait_exponential
@@ -98,6 +99,11 @@ class AutoALS(gym.Env, SideChannel):
         self.log_folder = log_folder
         self.memos = ''
 
+        self.action_space = gym.spaces.Discrete(len(actions))
+        self.observation_space = gym.spaces.Box(low=0, high=1, 
+                                                shape=len(observations), 
+                                                dtype=float)
+
     def on_message_received(self, msg: IncomingMessage) -> None:
         self.memos += msg.read_string()
 
@@ -115,8 +121,9 @@ class AutoALS(gym.Env, SideChannel):
             self.unity_env = proivision_unity_env(self.render_, self.attach_, self.autoplay_, [self], 
                                                   log_folder=self.log_folder)
             self.rl_env = UnityToGymWrapper(self.unity_env)
-            self.action_space = self.rl_env.action_space
-            self.observation_space = self.rl_env.observation_space
+
+            assert self.rl_env.observation_space == self.observation_space, 'Observation space mismatch'
+            assert self.rl_env.action_space == self.action_space, 'Action space mismatch'
         except (UnityException, UnityGymException) as e:
             raise AutoALSException('Unity environment is not starting as expected') from e
         
