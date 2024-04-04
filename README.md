@@ -137,7 +137,7 @@ from auto_als import observations
 
 ## Action space
 
-`action` should be an integer no less than 0 and no more than 36. The 36 actions are:
+`action` should be an integer no less than 0 and no more than 36. The 37 actions are:
 
 ```
     DoNothing,
