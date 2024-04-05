@@ -113,6 +113,9 @@ class AutoALS(gym.Env, SideChannel):
             self.rl_env.close()
             self.unity_env.close()
 
+            del self.rl_env
+            del self.unity_env
+
             # Ideally, we should wait until the environment is closed,
             # but ml agents does not seem to provide a way to do that
             time.sleep(DELAY)
