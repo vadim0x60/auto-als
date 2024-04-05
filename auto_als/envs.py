@@ -3,6 +3,7 @@ import sys
 import time
 import uuid
 import gymnasium as gym
+import gc
 
 from mlagents_envs.environment import UnityEnvironment
 from mlagents_envs.exception import UnityEnvironmentException, UnityWorkerInUseException, UnityException
@@ -115,6 +116,7 @@ class AutoALS(gym.Env, SideChannel):
 
             del self.rl_env
             del self.unity_env
+            gc.collect()
 
             # Ideally, we should wait until the environment is closed,
             # but ml agents does not seem to provide a way to do that
