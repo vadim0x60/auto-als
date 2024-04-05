@@ -118,10 +118,7 @@ class AutoALS(gym.Env, SideChannel):
             del self.unity_env
             gc.collect()
 
-            # Ideally, we should wait until the environment is closed,
-            # but ml agents does not seem to provide a way to do that
-            time.sleep(DELAY)
-        except AttributeError:
+        except (AttributeError, UnityException, UnityGymException):
             pass
 
     def reset(self, seed=None):
