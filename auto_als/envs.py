@@ -113,10 +113,6 @@ class AutoALS(gym.Env, SideChannel):
             self.rl_env.close()
             self.unity_env.close()
 
-            del self.rl_env
-            del self.unity_env
-            gc.collect()
-
         except (AttributeError, UnityException, UnityGymException):
             pass
 
