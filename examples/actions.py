@@ -9,13 +9,21 @@ def actions(render):
 
     print(env.reset())
 
-    for idx, name in enumerate(auto_als.actions):
-        print(name)
-        ret = env.step(idx)
+    plan = [
+        a 
+        for _ in range(10)
+        for a in range(len(auto_als.actions) - 1)
+    ] + [len(auto_als.actions) - 1]
+
+    print('About to make {len(plan)} actions. Wish me luck')
+
+    for a in plan:
+        print(auto_als.actions[a])
+        ret = env.step(a)
         print(ret)
 
         if (ret[2] or ret[3]):
-            print(env.reset())
+            break
 
     env.close()
 
