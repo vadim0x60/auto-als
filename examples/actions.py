@@ -15,7 +15,7 @@ def actions(render):
         for a in range(len(auto_als.actions) - 1)
     ] + [len(auto_als.actions) - 1]
 
-    print('About to make {len(plan)} actions. Wish me luck')
+    print(f'About to make {len(plan)} actions. Wish me luck')
 
     for a in plan:
         print(auto_als.actions[a])
