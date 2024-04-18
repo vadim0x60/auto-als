@@ -11,11 +11,11 @@ def expert(render):
         env = gym.make('Auto-ALS-v0', attach=False, render=render, autoplay=True)
         for _ in range(1 if render else 3):
             print(env.reset())
-            print(env.step(actions['AssessAirway']))
-            print(env.step(actions['AssessBreathing']))
-            print(env.step(actions['AssessCirculation']))
-            print(env.step(actions['AssessDisability']))
-            print(env.step(actions['AssessExposure']))
+            print(env.step(actions['ExamineAirway']))
+            print(env.step(actions['ExamineBreathing']))
+            print(env.step(actions['ExamineCirculation']))
+            print(env.step(actions['ExamineDisability']))
+            print(env.step(actions['ExamineExposure']))
             if not render:
                 print(env.step(actions['Finish']))
     finally:
