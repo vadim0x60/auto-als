@@ -45,7 +45,7 @@ while not done:
 env.close()
 ```
 
-With this, your agent will keep applying random medical procedures to John until John gets better (unlikely), dies or the agent selects action 49 (Finish) and gives up on John. If you set `render=True` you will get to watch it happen in a 3D simulation:
+With this, your agent will keep applying random medical procedures to John until John gets better (unlikely), dies or the agent selects action 48 (Finish) and gives up on John. If you set `render=True` you will get to watch it happen in a 3D simulation:
 
 ![Poor John](https://static.vadim.me/Virtu-ALS.png)
 
@@ -137,7 +137,7 @@ from auto_als import observations
 
 ## Action space
 
-`action` should be an integer no less than 0 and no more than 49. The 50 actions are:
+`action` should be an integer no less than 0 and no more than 48. The 49 actions are:
 
 ```
     DoNothing,
@@ -154,7 +154,7 @@ from auto_als import observations
     GiveAmiodarone,
     GiveAtropine,
     GiveMidazolam,
-    SetUpIVAccess,
+    UseVenflonIVCatheter,
     GiveFluids,
     ViewMonitor,
     StartChestCompression,
@@ -169,7 +169,6 @@ from auto_als import observations
     UseAline,
     UseBloodPressureCuff,
     AttachDefibPads,
-    UseVenflon,
     UseBagValveMask,
     UseNonRebreatherMask,
     UseYankeurSucionCatheter,
