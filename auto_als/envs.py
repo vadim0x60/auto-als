@@ -75,7 +75,7 @@ def proivision_unity_env(render=False, attach=False, autoplay=True,
         if autoplay:
             additional_args.append('--autoplay')
         if time_scale:
-            additional_args.append(f'--ts {time_scale}')
+            additional_args.append(f'--ts={time_scale}')
 
         unity_env = UnityEnvironment(launcher, no_graphics=not render, 
                                      additional_args=additional_args,
