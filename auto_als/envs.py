@@ -3,7 +3,7 @@ import sys
 import time
 import uuid
 import gymnasium as gym
-import gc
+import os
 
 from mlagents_envs.environment import UnityEnvironment
 from mlagents_envs.exception import UnityEnvironmentException, UnityWorkerInUseException, UnityException
@@ -64,7 +64,7 @@ def download_build():
 @retry(retry=retry_if_exception_type(UnityWorkerInUseException),
        wait=wait_exponential(multiplier=0.1, min=0.1))
 def proivision_unity_env(render=False, attach=False, autoplay=True,
-                         side_channels=[], log_folder=None):
+                         time_scale = 5, side_channels=[], log_folder=None):
     if attach:
         unity_env = UnityEnvironment()
     else:
@@ -74,6 +74,8 @@ def proivision_unity_env(render=False, attach=False, autoplay=True,
         additional_args = []
         if autoplay:
             additional_args.append('--autoplay')
+        if time_scale:
+            additional_args.append(f'--ts {time_scale}')
 
         unity_env = UnityEnvironment(launcher, no_graphics=not render, 
                                      additional_args=additional_args,
@@ -83,16 +85,23 @@ def proivision_unity_env(render=False, attach=False, autoplay=True,
 
 class AutoALS(gym.Env, SideChannel):
     def __init__(self, attach=False, render=False, autoplay='auto', 
-                 log_folder='.'):
+                 time_scale=None, log_folder='.'):
         gym.Env.__init__(self)
         SideChannel.__init__(self, SIDE_CHANNEL)
 
         if autoplay == 'auto':
             autoplay = False if render else True
+
+        if time_scale is None:
+            try:
+                time_scale = float(os.environ['TIME_SCALE'])
+            except (KeyError, ValueError):
+                time_scale = 1
         
         assert autoplay or render, 'Hybrid mode requires render to be set to True'
 
         self.autoplay_ = autoplay
+        self.time_scale_ = time_scale
         self.attach_ = attach
         self.render_ = render
         self.log_folder = log_folder
@@ -118,7 +127,8 @@ class AutoALS(gym.Env, SideChannel):
         self.close()
 
         try:
-            self.unity_env = proivision_unity_env(self.render_, self.attach_, self.autoplay_, [self], 
+            self.unity_env = proivision_unity_env(self.render_, self.attach_, 
+                                                  self.autoplay_, self.time_scale_, [self], 
                                                   log_folder=self.log_folder)
             self.rl_env = UnityToGymWrapper(self.unity_env)
         except (UnityException, UnityGymException) as e:
