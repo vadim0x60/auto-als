@@ -113,7 +113,7 @@ class AutoALS(gym.Env, SideChannel):
                                                 dtype=float)
 
     def on_message_received(self, msg: IncomingMessage) -> None:
-        self.memos += msg.read_string()
+        self.memos += msg.read_string() + '\n'
 
     def close(self):
         try:
