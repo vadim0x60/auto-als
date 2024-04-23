@@ -64,7 +64,7 @@ def download_build():
 @retry(retry=retry_if_exception_type(UnityWorkerInUseException),
        wait=wait_exponential(multiplier=0.1, min=0.1))
 def proivision_unity_env(render=False, attach=False, autoplay=True,
-                         time_scale = 5, side_channels=[], log_folder=None):
+                         time_scale=None, side_channels=[], log_folder=None):
     if attach:
         unity_env = UnityEnvironment()
     else:
@@ -95,8 +95,9 @@ class AutoALS(gym.Env, SideChannel):
         if time_scale is None:
             try:
                 time_scale = float(os.environ['TIME_SCALE'])
+                print('Setting timescale to', time_scale)
             except (KeyError, ValueError):
-                time_scale = 1
+                pass
         
         assert autoplay or render, 'Hybrid mode requires render to be set to True'
 
