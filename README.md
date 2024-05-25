@@ -191,7 +191,7 @@ from auto_als import observations
     Finish
 ```
 
-Note, in particular, the `Examine` actions. These actions, just like `DoNothing` are guaranteed to have no effect on the patient state. However, some observation events will not trigger unless you go looking for them. To check the blood pressure, one needs to attach the blood pressure cuff to the patient and look at the monitor. Hence, the `MeasuredMAP` event will only trigger after you `BPCuffOn` and `ExamineMonitor`. [Examinement skills](https://www.resus.org.uk/library/abcde-approach) (knowing where to look and how to establish the patient's state) are crucial for patient resusciation - the simulation would be woefully inadequate if the Examinements were just provided for you automatically.
+Note, in particular, the `Examine` actions. These actions, just like `DoNothing` are guaranteed to have no effect on the patient state. However, some observation events will not trigger unless you go looking for them. To check the blood pressure, one needs to attach the blood pressure cuff to the patient and look at the monitor. Hence, the `MeasuredMAP` event will only trigger after you `BPCuffOn` and `ExamineMonitor`. [Examination skills](https://www.resus.org.uk/library/abcde-approach) (knowing where to look and how to establish the patient's state) are crucial for patient resusciation - the simulation would be woefully inadequate if the Examinations were just provided for you automatically.
 
 The above list of actions can be accessed with
 
