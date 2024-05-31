@@ -67,7 +67,7 @@ So, `action` and `observation` variables are used to establish communication bet
 
 ## Observation space
 
-The `observation` is a numpy vector of size 33+7+7=47 that represents various events that happened in the environment prior to the moment when `observation` is received. It implements an event encoding strategy described in [Reinforcement Learning as Message Passing](https://vadim.me/posts/mpdp/).
+The `observation` is a numpy vector of size 39+7+7=53 that represents various events that happened in the environment prior to the moment when `observation` is received. It implements an event encoding strategy described in [Reinforcement Learning as Message Passing](https://vadim.me/posts/mpdp/).
 
 The first 33 elements indicate whether one of 33 types of events has occured and how long ago it happened. For i=1,2,...,33:
 
@@ -80,7 +80,7 @@ $$t - t_i = \infty \implies \exp(t_i - t) = 0$$
 The 33 events are as follows: 
 
 ```
-    ResponseVerbal,
+ ResponseVerbal,
     ResponseGroan,
     ResponseNone,
     AirwayClear,
@@ -108,11 +108,17 @@ The 33 events are as follows:
     ExposureRash,
     ExposurePeripherallyShutdown,
     ExposureStainedUnderwear,
-    HeartRhythm0,
-    HeartRhythm1,
-    HeartRhythm2,
-    HeartRhythm3,
-    HeartRhythm4
+    HeartRhythmNSR,
+    HeartRhythmSVT,
+    HeartRhythmAF,
+    HeartRhythmAtrialFlutter,
+    HeartRhythmVT,
+    HeartRhythmMobitzI,
+    HeartRhythmMobitzII,
+    HeartRhythmCompleteHeartBlock,
+    HeartRhythmTorsades,
+    HeartRhythmBigeminy,
+    HeartRhythmVF
 ```
 
 The next 7 components use the same time encoding $o_i = \exp(t_i - t)$ for vital signs measurement, i.e. how recently the last measurement has occured:
