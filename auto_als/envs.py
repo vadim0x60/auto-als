@@ -85,7 +85,7 @@ def proivision_unity_env(render=False, attach=False, autoplay=True,
 
 class AutoALS(gym.Env, SideChannel):
     def __init__(self, attach=False, render=False, autoplay='auto', 
-                 time_scale=None, log_folder='.'):
+                 time_scale=None, log_folder='.', silence_errors=False):
         gym.Env.__init__(self)
         SideChannel.__init__(self, SIDE_CHANNEL)
 
@@ -107,6 +107,7 @@ class AutoALS(gym.Env, SideChannel):
         self.render_ = render
         self.log_folder = log_folder
         self.memos = ''
+        self.silence_errors = silence_errors
 
         self.action_space = gym.spaces.Discrete(len(actions))
         self.observation_space = gym.spaces.Box(low=0, high=1, 
@@ -127,21 +128,33 @@ class AutoALS(gym.Env, SideChannel):
     def reset(self, seed=None):
         self.close()
 
-        try:
-            self.unity_env = proivision_unity_env(self.render_, self.attach_, 
-                                                  self.autoplay_, self.time_scale_, [self], 
-                                                  log_folder=self.log_folder)
-            self.rl_env = UnityToGymWrapper(self.unity_env)
-        except (UnityException, UnityGymException) as e:
-            raise AutoALSException('Unity environment is not starting as expected') from e
-        
-        return self.rl_env.reset()
+        while True:
+            try:
+                self.unity_env = proivision_unity_env(self.render_, self.attach_, 
+                                                    self.autoplay_, self.time_scale_, [self], 
+                                                    log_folder=self.log_folder)
+                self.rl_env = UnityToGymWrapper(self.unity_env)
+            except (UnityException, UnityGymException) as e:
+                if not self.silence_errors:
+                    raise AutoALSException('Unity environment is not starting as expected') from e
+            
+            return self.rl_env.reset()
         
     def step(self, action):
+        ons = self.observation_space.sample()
+        info = {}
+        reward = 0
+
         try:
             obs, reward, terminated, truncated, info = self.rl_env.step(action)
             info['memos'] = self.memos
             self.memos = ''
-            return obs, reward, terminated, truncated, info
         except (UnityException, UnityGymException) as e:
-            raise AutoALSException('Unity environment is not responding as expected') from e
+            if self.silence_errors:
+                terminated = True
+                truncated = True
+                info = {**info, 'memos': 'Unity environment is not responding as expected'}
+            else:
+                raise AutoALSException('Unity environment is not responding as expected') from e                
+            
+        return obs, reward, terminated, truncated, info
