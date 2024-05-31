@@ -28,7 +28,7 @@ def no_history_obs(obs):
 def solve(attach, baseline, device, render):
     #evaluate_policy(model, env)
     try:
-        env = gym.make('Auto-ALS-v0', attach=attach, autoplay=True, render=render)
+        env = gym.make('Auto-ALS-v0', attach=attach, autoplay=True, render=render, silence_errors=True)
         env = gym.wrappers.TimeLimit(env, max_episode_steps=N_EPISODE_STEPS)
 
         if device == 'auto':
