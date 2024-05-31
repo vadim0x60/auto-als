@@ -141,7 +141,7 @@ class AutoALS(gym.Env, SideChannel):
             return self.rl_env.reset()
         
     def step(self, action):
-        ons = self.observation_space.sample()
+        obs = self.observation_space.sample()
         info = {}
         reward = 0
 
