@@ -80,7 +80,7 @@ $$t - t_i = \infty \implies \exp(t_i - t) = 0$$
 The 33 events are as follows: 
 
 ```
- ResponseVerbal,
+    ResponseVerbal,
     ResponseGroan,
     ResponseNone,
     AirwayClear,
