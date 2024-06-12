@@ -3,6 +3,7 @@ import sys
 import time
 import uuid
 import gymnasium as gym
+import numpy as np
 import os
 
 from mlagents_envs.environment import UnityEnvironment
@@ -32,6 +33,7 @@ ORIGIN = 'https://github.com/vadim0x60/virtu-als-plus/releases/download/1.6/'
 DOWNLOAD_MSG = """Downloading a copy of Virtu-ALS... 
                   This will take up to 0.5 GB of traffic"""
 SIDE_CHANNEL = uuid.UUID('bdb17919-c516-44da-b045-a2191e972dec')
+PORT_COUNT = 300
 
 def required_build():
     if sys.platform == 'linux':
@@ -64,7 +66,7 @@ def download_build():
 @retry(retry=retry_if_exception_type(UnityWorkerInUseException),
        wait=wait_exponential(multiplier=0.1, min=0.1))
 def proivision_unity_env(render=False, attach=False, autoplay=True,
-                         time_scale=None, side_channels=[], log_folder=None):
+                         time_scale=None, side_channels=[], log_folder=None, worker_id=None):
     if attach:
         unity_env = UnityEnvironment()
     else:
@@ -80,12 +82,14 @@ def proivision_unity_env(render=False, attach=False, autoplay=True,
         unity_env = UnityEnvironment(launcher, no_graphics=not render, 
                                      additional_args=additional_args,
                                      log_folder=log_folder,
-                                     side_channels=side_channels)
+                                     side_channels=side_channels,
+                                     worker_id=worker_id or np.random.randint(0, PORT_COUNT))
     return unity_env
 
 class AutoALS(gym.Env, SideChannel):
     def __init__(self, attach=False, render=False, autoplay='auto', 
-                 time_scale=None, log_folder='.', silence_errors=False):
+                 time_scale=None, log_folder='.', silence_errors=False,
+                 worker_id = None):
         gym.Env.__init__(self)
         SideChannel.__init__(self, SIDE_CHANNEL)
 
@@ -108,6 +112,7 @@ class AutoALS(gym.Env, SideChannel):
         self.log_folder = log_folder
         self.memos = ''
         self.silence_errors = silence_errors
+        self.worker_id = worker_id
 
         self.action_space = gym.spaces.Discrete(len(actions))
         self.observation_space = gym.spaces.Box(low=0, high=1, 

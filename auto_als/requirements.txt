@@ -1,4 +1,4 @@
-mlagents-envs==0.*
+mlagents-envs==1.*
 tenacity==8.*
 protobuf==3.*
 numpy<1.24.0
