@@ -34,6 +34,7 @@ DOWNLOAD_MSG = """Downloading a copy of Virtu-ALS...
                   This will take up to 0.5 GB of traffic"""
 SIDE_CHANNEL = uuid.UUID('bdb17919-c516-44da-b045-a2191e972dec')
 PORT_COUNT = 300
+TIMEOUT_WAIT = 600
 
 def required_build():
     if sys.platform == 'linux':
@@ -81,6 +82,7 @@ def proivision_unity_env(render=False, attach=False, autoplay=True,
 
         unity_env = UnityEnvironment(launcher, no_graphics=not render, 
                                      additional_args=additional_args,
+                                     timeout_wait=TIMEOUT_WAIT,
                                      log_folder=log_folder,
                                      side_channels=side_channels,
                                      worker_id=worker_id or np.random.randint(0, PORT_COUNT))
